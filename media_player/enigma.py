@@ -189,7 +189,7 @@ class EnigmaDevice(MediaPlayerDevice):
 
             eventtitle = 'N/A'
             """ If we got a valid reference, check the title of the event and the picon url """
-            if reference != 'N/A':
+            if reference != 'N/A' and not reference.startswith('1:0:0:0:0:0:0:0:0:0:'):
                 xml = self.request_call('/web/epgservicenow?sRef=' + reference)
                 soup = BeautifulSoup(xml, 'html.parser')
                 eventtitle = soup.e2eventtitle.renderContents().decode('UTF8')
