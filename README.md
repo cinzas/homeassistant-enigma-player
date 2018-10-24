@@ -17,7 +17,7 @@ You must install OpenWebif from your enigma2 image.
   - Picon from current channel
   - Supports authentication and multiple receivers
   - Sending notifications to the box (timeout and type of message can be selected)
-    
+  - * NEW: Load sources from selected bouquet
 # Tested with OpenWebif versions:
   - 0.2.7
   - 1.3.0
@@ -62,6 +62,46 @@ notify:
     username: root
     password: !secret enigma_password
 ```
+# Load sources from selected bouquet
+Find your bouquet's <e2servicereference> name http://box.ip/web/getallservices
+
+```
+<e2servicelistrecursive>
+<e2service>
+<e2servicereference>
+1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "userbouquet.favourites.tv" ORDER BY bouquet
+</e2servicereference>
+<e2servicename>Favourites (TV)</e2servicename>
+</e2service>
+<e2bouquet>
+<e2servicereference>
+1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "userbouquet.upcd__digi_hu__1w_.tv" ORDER BY bouquet
+</e2servicereference>
+<e2servicename>01.0W - UPC+DIGI MIX</e2servicename>
+<e2servicelist>
+<e2service>
+<e2servicereference>1:0:1:FC8:D:1:E062E2F:0:0:0:</e2servicereference>
+<e2servicename>M1 HD</e2servicename>
+</e2service>
+...
+```
+In my case, I want to use 01.0W - UPC+DIGI MIX bouquet, so I need string from <e2servicereference> above: 
+
+```1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "userbouquet.upcd__digi_hu__1w_.tv" ORDER BY bouquet```
+
+``` python
+media_player:
+- platform: enigma
+    host: 192.168.1.50
+    port: 80
+    name: Gigablue
+    icon: mdi:satellite-variant
+    timeout: 20
+    username: root
+    password: !secret enigma_password
+    bouquet: '1:7:1:0:0:0:0:0:0:0:FROM BOUQUET "userbouquet.upcd__digi_hu__1w_.tv" ORDER BY bouquet'
+```
+
 # Screenshots
 ![Channel example 1](../master/screenshots/1.png)
 ![Channel example 2](../master/screenshots/2.png)
