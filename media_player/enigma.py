@@ -46,7 +46,6 @@ DEFAULT_USERNAME = 'root'
 DEFAULT_PASSWORD = None
 
 CONF_BOUQUET = 'bouquet'
-DEFAULT_BOUQUET = None
 
 SUPPORT_ENIGMA = SUPPORT_VOLUME_SET | SUPPORT_VOLUME_MUTE | \
                  SUPPORT_TURN_ON | SUPPORT_TURN_OFF | \
@@ -62,7 +61,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_PASSWORD, default=DEFAULT_PASSWORD): cv.string,
     vol.Optional(CONF_PORT, default=DEFAULT_PORT): cv.port,
     vol.Optional(CONF_TIMEOUT, default=DEFAULT_TIMEOUT): cv.socket_timeout,
-    vol.Optional(CONF_BOUQUET, default=DEFAULT_BOUQUET ): cv.string,
+    vol.Optional(CONF_BOUQUET): cv.string,
 })
 
 @asyncio.coroutine
@@ -128,7 +127,7 @@ class EnigmaDevice(MediaPlayerDevice):
 
     def load_sources(self):
 
-        if not (self._bouquet is None):
+        if self._bouquet:
 
             """Load user set bouquet."""
 
