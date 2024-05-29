@@ -23,7 +23,6 @@ import voluptuous as vol
 from datetime import timedelta
 from urllib.error import HTTPError, URLError
 
-
 # From homeassitant
 
 from custom_components.enigma import _LOGGER, DOMAIN as ENIGMA_DOMAIN
@@ -113,7 +112,7 @@ class EnigmaMediaPlayer(MediaPlayerEntity):
         self._bouquet = EnigmaMediaPlayerEntity.get_bouquet
         self._picon = EnigmaMediaPlayerEntity.get_picon
         self._opener = EnigmaMediaPlayerEntity.get_opener
-        self._pwstate = True
+        self._pwstate = 'true'
         self._volume = 0
         self._muted = False
         self._selected_source = ''
@@ -127,7 +126,6 @@ class EnigmaMediaPlayer(MediaPlayerEntity):
     async def async_added_to_hass(self):
         """Run when entity about to be added."""
         await super().async_added_to_hass()
-        await self.load_sources()
       
     # Load channels from specified bouquet or from first available bouquet
     async def load_sources(self):
@@ -177,21 +175,26 @@ class EnigmaMediaPlayer(MediaPlayerEntity):
         soup = BeautifulSoup(bouquets_xml, features = "xml")
         return soup.find('e2servicereference').renderContents().decode('UTF8')
 
-    # Asnc API requests
+    # Async API requests
     async def request_call(self, url):
         """Call web API request."""
         uri = 'http://' + self._host + ":" + str(self._port) + url
+        emptyxml = '<root></root>'
         _LOGGER.debug("Enigma: [request_call] - Call request %s ", uri)
-        # Check if is password enabled
-        if self._password is not None:
-            # Handle HTTP Auth
-            async with self._opener.get(uri, auth=aiohttp.BasicAuth(self._username, self._password)) as resp:
-                text = await resp.read()
-                return text
-        else:
-            async with self._opener.get(uri) as resp:
-                text = await resp.read()
-                return text
+        try:
+            # Check if is password enabled
+            if self._password is not None:
+                # Handle HTTP Auth
+                async with self._opener.get(uri, auth=aiohttp.BasicAuth(self._username, self._password), timeout=5) as resp:
+                    text = await resp.read()
+                    return text
+            else:
+                async with self._opener.get(uri) as resp:
+                    text = await resp.read()
+                    return text
+        except:
+            # return to bs4
+            return emptyxml
 
     # Component Update
     @Throttle(MIN_TIME_BETWEEN_SCANS)
@@ -203,11 +206,18 @@ class EnigmaMediaPlayer(MediaPlayerEntity):
                      self._name)
         powerstate_xml = await self.request_call('/web/powerstate')
         powerstate_soup = BeautifulSoup(powerstate_xml, features = "xml")
-        pwstate = powerstate_soup.e2instandby.renderContents().decode('UTF8')
-        self._pwstate = ''
+        try:
+            pwstate = powerstate_soup.find('e2instandby').renderContents().decode('UTF8').strip()
+        except:
+            pwstate = 'true' # true means box is in standby/offline
 
-        _LOGGER.debug("Enigma: [update] - Powerstate for host %s = %s",
-                      self._host, pwstate)
+        _LOGGER.debug("Enigma: [update] - Powerstate for host %s = %s previous state = %s",
+                      self._host, pwstate, self._pwstate)
+
+        if pwstate == 'false' and self._pwstate == 'true':
+            _LOGGER.debug("Enigma: [update] - Powerstate change detected (is now online), reloading sources")
+            await self.load_sources()
+
         if pwstate.find('false') >= 0:
             self._pwstate = 'false'
 
