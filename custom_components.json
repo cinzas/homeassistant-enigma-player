@@ -1,20 +1,20 @@
 {
     "Enigma component": {
-      "version": "1.2",
+      "version": "1.9",
       "local_location": "custom_components/enigma/__init__.py",
       "remote_location": "https://raw.githubusercontent.com/cinzas/homeassistant-enigma-player/master/enigma/__init__.py",
       "visit_repo": "https://github.com/cinzas/homeassistant-enigma-player",
       "changelog": "https://github.com/cinzas/homeassistant-enigma-player/releases/latest"
     },
     "Enigma Media Player": {
-      "version": "1.2",
+      "version": "1.9",
       "local_location": "custom_components/enigma/media_player.py",
       "remote_location": "https://raw.githubusercontent.com/cinzas/homeassistant-enigma-player/master/enigma/media_player.py",
       "visit_repo": "https://github.com/cinzas/homeassistant-enigma-player",
       "changelog": "https://github.com/cinzas/homeassistant-enigma-player/releases/latest"
     },
     "Enigma Notification": {
-      "version": "1.2",
+      "version": "1.9",
       "local_location": "custom_components/enigma/notify.py",
       "remote_location": "https://raw.githubusercontent.com/cinzas/homeassistant-enigma-player/master/enigma/notify.py",
       "visit_repo": "https://github.com/cinzas/homeassistant-enigma-player",

@@ -48,7 +48,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.util import Throttle
 
 # VERSION
-VERSION = '1.8'
+VERSION = '1.9'
 
 # Dependencies
 DEPENDENCIES = ['enigma']
@@ -312,6 +312,11 @@ class EnigmaMediaPlayer(MediaPlayerEntity):
     def name(self):
         """Return the name of the device."""
         return self._name
+
+    @property
+    def unique_id(self) -> str:
+        """Return a unique, Home Assistant friendly identifier for this entity."""
+        return str(self._host).replace(".", "_")+"_"+str(self._port)+"_"+str(self._name)
 
 # GET - State
     @property
