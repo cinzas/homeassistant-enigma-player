@@ -1,7 +1,7 @@
 {
   "domain": "enigma",
   "name": "Enigma2 addon",
-  "version" : "1.9",
+  "version" : "1.9.1",
   "documentation": "https://github.com/cinzas/homeassistant-enigma-player",
   "issue_tracker": "https://github.com/cinzas/homeassistant-enigma-player/issues",
   "dependencies": [],
