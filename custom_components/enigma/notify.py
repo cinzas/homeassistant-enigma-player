@@ -32,7 +32,7 @@ from homeassistant.helpers import aiohttp_client, config_validation as cv
 
 
 # VERSION
-VERSION = '1.9'
+VERSION = '1.9.1'
 
 # Default value for display (if not passed as argument in data field)
 # 20 seconds for timeout

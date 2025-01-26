@@ -26,10 +26,6 @@ from urllib.error import HTTPError, URLError
 # From homeassitant
 
 from custom_components.enigma import _LOGGER, DOMAIN as ENIGMA_DOMAIN
-from homeassistant.components.media_player.const import (
-    MEDIA_TYPE_CHANNEL,
-    MEDIA_TYPE_TVSHOW
- )
 
 from homeassistant.components.media_player import (
     MediaPlayerEntity,
@@ -251,7 +247,12 @@ class EnigmaMediaPlayer(MediaPlayerEntity):
                 eventtitle = soup.e2eventtitle.renderContents().decode('UTF8')
                 eventid = soup.e2eventid.renderContents().decode('UTF8')
                 if self._password != DEFAULT_PASSWORD:
-                    # if icon = screenhost then get screenshot
+                    # If reference has custonam channel name added to the
+                    # end, need to remove it
+                    if "::" in reference:
+                        reference = reference.split("::")[0]+":"
+                        
+                    # if picon = screenhost then get screenshot
                     if self._picon == 'screenshot':
                         self._picon_url = 'http://' + \
                                            self._username + ':' + \
@@ -351,7 +352,7 @@ class EnigmaMediaPlayer(MediaPlayerEntity):
     @property
     def media_content_type(self):
         """Content type of current playing media."""
-        return MEDIA_TYPE_TVSHOW
+        return MediaType.TVSHOW
 
 # GET - Content id - Current Channel name
     @property
@@ -431,7 +432,7 @@ class EnigmaMediaPlayer(MediaPlayerEntity):
 # SET - Change to channel number
     async def async_play_media(self, media_type, media_id, **kwargs):
         """Support changing a channel."""
-        if media_type != MEDIA_TYPE_CHANNEL:
+        if media_type != MediaType.CHANNEL:
             _LOGGER.error('Unsupported media type')
             return
         try:
