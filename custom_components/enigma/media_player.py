@@ -244,8 +244,12 @@ class EnigmaMediaPlayer(MediaPlayerEntity):
                             not reference.startswith('1:0:0:0:0:0:0:0:0:0:'):
                 xml = await self.request_call('/web/epgservicenow?sRef=' + reference)
                 soup = BeautifulSoup(xml, features = "xml")
-                eventtitle = soup.e2eventtitle.renderContents().decode('UTF8')
-                eventid = soup.e2eventid.renderContents().decode('UTF8')
+                try:
+                    eventtitle = soup.e2eventtitle.renderContents().decode('UTF8')
+                    eventid = soup.e2eventid.renderContents().decode('UTF8')
+                except:
+                    eventid = 'N/A'
+                    eventtitle = 'N/A'
                 if self._password != DEFAULT_PASSWORD:
                     # If reference has custonam channel name added to the
                     # end, need to remove it
